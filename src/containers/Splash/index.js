@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
-import { HOME } from '../../config/navigation';
+import { LOGIN } from '../../config/navigation';
 
 const Splash = (props) => {
     useEffect(() => {
-        setTimeout(() => props.navigation.navigate(HOME), 2000);
+        setTimeout(() => props.navigation.navigate(LOGIN), 2000);
     }, [])
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.text}>Splash Screen</Text>
+            <Text style={styles.text}>Kerjoo</Text>
         </SafeAreaView>
     )
 };

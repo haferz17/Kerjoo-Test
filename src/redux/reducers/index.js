@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 import { persistReducer } from "redux-persist";
+import authReducer from './authReducer';
 import homeReducer from './homeReducer';
-import { homeConfig } from '../../config/persist';
+import { authConfig, homeConfig } from '../../config/persist';
 
 const appReducer = combineReducers({
+    auth: persistReducer(authConfig, authReducer),
     home: persistReducer(homeConfig, homeReducer)
 });
 

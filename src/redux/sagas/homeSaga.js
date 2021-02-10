@@ -33,6 +33,7 @@ function* doAbsen({ item }) {
             headers: { Authorization: `Bearer ${token}` }
         })
         const data = res.data
+        console.log("data", data)
 
         yield put({ type: DoAbsenSuccess, data });
     } catch (error) {

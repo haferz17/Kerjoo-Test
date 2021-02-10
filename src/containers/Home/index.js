@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
-import { getDataAction } from "../../redux/actions/homeAction";
+import { doAbsenAction } from "../../redux/actions/homeAction";
 import { doLogoutAction } from "../../redux/actions/authAction";
 import { LOGIN } from '../../config/navigation';
 import { ScreenLoader } from '../../components';
 import moment from 'moment';
+import Geolocation from '@react-native-community/geolocation';
 
 const listAbsen = [
     { id: 1, name: 'Absen masuk' },
@@ -28,25 +29,40 @@ const listData = [
 const Home = (props) => {
     const [showAbsen, setShowAbsen] = useState(true)
     const [showData, setData] = useState(true)
+    const [coords, setCoords] = useState(null)
     const dispatch = useDispatch()
     const { isLoading, isSuccess, isError, token } = useSelector(state => state.auth)
 
-    // useEffect(() => { dispatch(getDataAction()) }, [])
+    // useEffect(() => {
+    //     Geolocation.getCurrentPosition(info => console.log(info));
+    // }, [])
 
-    const handleClickAbsen = (id) => {
+    const handleClickAbsen = () => {
         const body = {
-            type_id: id,
+            type_id: coords.typeId,
             log_date: moment().format("YYYY-MM-DD"),
             log_time: moment().format("HH:mm:ss"),
-            longitude: "",
-            latitude: ""
+            longitude: coords.longitude,
+            latitude: coords.latitude
         }
-        console.warn(body)
+        dispatch(doAbsenAction(body))
+    }
+
+    const getCoords = (typeId) => {
+        Geolocation.getCurrentPosition(info => setCoords({
+            typeId,
+            latitude: info.coords.latitude,
+            longitude: info.coords.longitude,
+        }));
     }
 
     const handleClickLogout = () => {
         dispatch(doLogoutAction())
     }
+
+    useEffect(() => {
+        coords && handleClickAbsen()
+    }, [coords])
 
     useEffect(() => {
         isSuccess && !token && props.navigation.navigate(LOGIN)
@@ -62,7 +78,7 @@ const Home = (props) => {
             </TouchableOpacity>
             {showAbsen && listAbsen.map(item => {
                 return (
-                    <TouchableOpacity onPress={() => handleClickAbsen(item.id)} style={styles.itemMenu}>
+                    <TouchableOpacity onPress={() => getCoords(item.id)} style={styles.itemMenu}>
                         <Text>{item.name}</Text>
                     </TouchableOpacity>
                 )

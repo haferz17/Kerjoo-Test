@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, ActivityIn
 import { useDispatch, useSelector } from "react-redux";
 import { doLoginAction } from "../../redux/actions/authAction";
 import { HOME } from '../../config/navigation';
+import { ScreenLoader } from '../../components';
 
 const Login = (props) => {
     const [email, setEmail] = useState("aftarr32@gmail.com")
@@ -21,7 +22,7 @@ const Login = (props) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <LoadingScreen loading={isLoading} />
+            <ScreenLoader loading={isLoading} />
             <Text style={styles.text}>Login</Text>
             <TextInput
                 value={email}
@@ -41,15 +42,6 @@ const Login = (props) => {
 };
 
 export default Login;
-
-const LoadingScreen = ({ loading }) => {
-    return (
-        loading &&
-        <View>
-            <ActivityIndicator size="large" color="lightgreen" />
-        </View>
-    )
-}
 
 const styles = StyleSheet.create({
     container: {

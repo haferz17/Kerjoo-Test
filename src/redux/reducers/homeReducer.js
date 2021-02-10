@@ -5,13 +5,17 @@ import {
     DoAbsenStart,
     DoAbsenSuccess,
     DoAbsenFailed,
+    GetAbsenStart,
+    GetAbsenSuccess,
+    GetAbsenFailed,
 } from '../../config/actionType';
 
 const initialState = {
     isLoading: false,
     isSuccess: false,
     isError: false,
-    data: []
+    data: [],
+    dataAbsen: []
 }
 
 const homeReducer = (state = initialState, action) => {
@@ -51,6 +55,26 @@ const homeReducer = (state = initialState, action) => {
                 // data: action.data
             }
         case DoAbsenFailed:
+            return {
+                ...state,
+                isLoading: false,
+                isError: true,
+            }
+        case GetAbsenStart:
+            return {
+                ...state,
+                isLoading: true,
+                isSuccess: false,
+                isError: false,
+            }
+        case GetAbsenSuccess:
+            return {
+                ...state,
+                isLoading: false,
+                isSuccess: true,
+                dataAbsen: action.data
+            }
+        case GetAbsenFailed:
             return {
                 ...state,
                 isLoading: false,

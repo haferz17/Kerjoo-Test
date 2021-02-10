@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
-import { doAbsenAction } from "../../redux/actions/homeAction";
+import { doAbsenAction, getAbsenAction } from "../../redux/actions/homeAction";
 import { doLogoutAction } from "../../redux/actions/authAction";
 import { LOGIN } from '../../config/navigation';
 import { ScreenLoader } from '../../components';
@@ -32,10 +32,11 @@ const Home = (props) => {
     const [coords, setCoords] = useState(null)
     const dispatch = useDispatch()
     const { isLoading, isSuccess, isError, token } = useSelector(state => state.auth)
+    const { dataAbsen } = useSelector(state => state.home)
 
-    // useEffect(() => {
-    //     Geolocation.getCurrentPosition(info => console.log(info));
-    // }, [])
+    useEffect(() => {
+        dispatch(getAbsenAction({ log_date: "2021-02-10" }))
+    }, [])
 
     const handleClickAbsen = () => {
         const body = {
@@ -83,14 +84,14 @@ const Home = (props) => {
                     </TouchableOpacity>
                 )
             })}
-            <TouchableOpacity onPress={() => setData(!showData)} style={styles.titleMenu}>
+            <TouchableOpacity onPress={() => dispatch(getAbsenAction({ log_date: "2021-02-10" }))} style={styles.titleMenu}>
                 <Text>Data Absensi</Text>
             </TouchableOpacity>
-            {showData && listData.map(item => {
+            {showData && dataAbsen.map(item => {
                 return (
                     <TouchableOpacity onPress={() => null} style={styles.tableData}>
-                        <Text>{item.name}</Text>
-                        <Text>{item.time}</Text>
+                        <Text>{item.type}</Text>
+                        <Text>{item.data ? item.data.log_time : "-"}</Text>
                         <TouchableOpacity>
                             <Text>View Map</Text>
                         </TouchableOpacity>

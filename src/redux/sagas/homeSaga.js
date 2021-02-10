@@ -10,6 +10,10 @@ import {
     DoAbsenStart,
     DoAbsenSuccess,
     DoAbsenFailed,
+    GetAbsen,
+    GetAbsenStart,
+    GetAbsenSuccess,
+    GetAbsenFailed,
 } from '../../config/actionType';
 import { GetDataApi, DoAbsenApi } from '../../config/api';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -40,8 +44,33 @@ function* doAbsen({ item }) {
         yield put({ type: DoAbsenFailed });
     }
 }
+function* getAbsen({ item }) {
+    yield put({ type: GetAbsenStart });
+    try {
+        const token = yield AsyncStorage.getItem("token")
+        const res = yield axios.get(DoAbsenApi, {
+            params: item,
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = res.data.data
+        const type = ['Masuk', 'Keluar', 'Istirahat', 'Selesai istirahat', 'Mulai lembur', 'Selesai lembur']
+        const newData = type.map((item, index) => {
+            return {
+                type: item,
+                id: index,
+                data: data[index] || null
+            }
+        })
+        console.log("newdata", newData)
+
+        yield put({ type: GetAbsenSuccess, data: newData });
+    } catch (error) {
+        yield put({ type: GetAbsenFailed });
+    }
+}
 
 export function* homeWatcher() {
     yield takeLatest(GetData, getData);
     yield takeLatest(DoAbsen, doAbsen);
+    yield takeLatest(GetAbsen, getAbsen);
 }   

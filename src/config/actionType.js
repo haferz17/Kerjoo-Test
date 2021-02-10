@@ -16,6 +16,12 @@ export const DoAbsenStart = 'DO_ABSEN_START'
 export const DoAbsenSuccess = 'DO_ABSEN_SUCCESS'
 export const DoAbsenFailed = 'DO_ABSEN_FAILED'
 
+// Get Absen Data
+export const GetAbsen = 'GET_ABSEN'
+export const GetAbsenStart = 'GET_ABSEN_START'
+export const GetAbsenSuccess = 'GET_ABSEN_SUCCESS'
+export const GetAbsenFailed = 'GET_ABSEN_FAILED'
+
 // Get todo list
 export const GetData = 'GET_DATA'
 export const GetDataStart = 'GET_DATA_START'

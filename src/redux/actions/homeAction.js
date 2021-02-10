@@ -1,4 +1,4 @@
-import { GetData, DoAbsen } from '../../config/actionType';
+import { GetData, DoAbsen, GetAbsen } from '../../config/actionType';
 
 export const getDataAction = () => {
     return {
@@ -8,6 +8,12 @@ export const getDataAction = () => {
 export const doAbsenAction = (item) => {
     return {
         type: DoAbsen,
+        item
+    }
+}
+export const getAbsenAction = (item) => {
+    return {
+        type: GetAbsen,
         item
     }
 }

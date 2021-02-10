@@ -15,7 +15,8 @@ const initialState = {
     isSuccess: false,
     isError: false,
     data: [],
-    dataAbsen: []
+    dataAbsen: [],
+    finishedType: []
 }
 
 const homeReducer = (state = initialState, action) => {
@@ -72,7 +73,8 @@ const homeReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: false,
                 isSuccess: true,
-                dataAbsen: action.data
+                dataAbsen: action.data.data,
+                finishedType: action.data.finishedType
             }
         case GetAbsenFailed:
             return {

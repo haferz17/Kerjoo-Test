@@ -53,6 +53,7 @@ function* getAbsen({ item }) {
             headers: { Authorization: `Bearer ${token}` }
         })
         const data = res.data.data
+        const finishedType = data.map(item => item.type_id)
         const type = ['Masuk', 'Keluar', 'Istirahat', 'Selesai istirahat', 'Mulai lembur', 'Selesai lembur']
         const newData = type.map((item, index) => {
             return {
@@ -61,9 +62,8 @@ function* getAbsen({ item }) {
                 data: data[index] || null
             }
         })
-        console.log("newdata", newData)
 
-        yield put({ type: GetAbsenSuccess, data: newData });
+        yield put({ type: GetAbsenSuccess, data: { data: newData, finishedType } });
     } catch (error) {
         yield put({ type: GetAbsenFailed });
     }

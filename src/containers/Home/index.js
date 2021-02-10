@@ -7,6 +7,7 @@ import { LOGIN } from '../../config/navigation';
 import { ScreenLoader } from '../../components';
 import moment from 'moment';
 import Geolocation from '@react-native-community/geolocation';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
 const listAbsen = [
     { id: 1, name: 'Absen masuk' },
@@ -17,25 +18,17 @@ const listAbsen = [
     { id: 6, name: 'Absen selesai lembur' },
 ]
 
-const listData = [
-    { id: 1, name: 'Masuk', time: '08:00' },
-    { id: 2, name: 'Keluar', time: '08:00' },
-    { id: 3, name: 'Istirahat', time: '08:00' },
-    { id: 4, name: 'Selesai istirahat', time: '08:00' },
-    { id: 5, name: 'Mulai lembur', time: '08:00' },
-    { id: 6, name: 'Selesai lembur', time: '08:00' },
-]
-
 const Home = (props) => {
     const [showAbsen, setShowAbsen] = useState(true)
     const [showData, setData] = useState(true)
     const [coords, setCoords] = useState(null)
+    const [marker, setMarker] = useState(null)
     const dispatch = useDispatch()
     const { isLoading, isSuccess, isError, token } = useSelector(state => state.auth)
-    const { dataAbsen } = useSelector(state => state.home)
+    const { dataAbsen, finishedType } = useSelector(state => state.home)
 
     useEffect(() => {
-        dispatch(getAbsenAction({ log_date: "2021-02-10" }))
+        dispatch(getAbsenAction({ log_date: moment().format("YYYY-MM-DD") || "" }))
     }, [])
 
     const handleClickAbsen = () => {
@@ -47,6 +40,7 @@ const Home = (props) => {
             latitude: coords.latitude
         }
         dispatch(doAbsenAction(body))
+        dispatch(getAbsenAction({ log_date: moment().format("YYYY-MM-DD") || "" }))
     }
 
     const getCoords = (typeId) => {
@@ -55,6 +49,17 @@ const Home = (props) => {
             latitude: info.coords.latitude,
             longitude: info.coords.longitude,
         }));
+    }
+
+    const handleViewMap = (data) => {
+        if (data) {
+            setMarker({
+                latitude: parseFloat(data.latitude),
+                longitude: parseFloat(data.longitude),
+                latitudeDelta: Math.max(0, parseFloat(data.latitude)),
+                longitudeDelta: Math.max(0, parseFloat(data.longitude))
+            })
+        }
     }
 
     const handleClickLogout = () => {
@@ -79,25 +84,39 @@ const Home = (props) => {
             </TouchableOpacity>
             {showAbsen && listAbsen.map(item => {
                 return (
-                    <TouchableOpacity onPress={() => getCoords(item.id)} style={styles.itemMenu}>
+                    <TouchableOpacity
+                        key={item.id}
+                        onPress={() => getCoords(item.id)}
+                        style={styles.itemMenu(finishedType.includes(item.id))}>
                         <Text>{item.name}</Text>
                     </TouchableOpacity>
                 )
             })}
-            <TouchableOpacity onPress={() => dispatch(getAbsenAction({ log_date: "2021-02-10" }))} style={styles.titleMenu}>
+            <TouchableOpacity onPress={() => setData(!showData)} style={styles.titleMenu}>
                 <Text>Data Absensi</Text>
             </TouchableOpacity>
             {showData && dataAbsen.map(item => {
                 return (
-                    <TouchableOpacity onPress={() => null} style={styles.tableData}>
+                    <TouchableOpacity key={item.id} onPress={() => null} style={styles.tableData}>
                         <Text>{item.type}</Text>
                         <Text>{item.data ? item.data.log_time : "-"}</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleViewMap(item.data)}>
                             <Text>View Map</Text>
                         </TouchableOpacity>
                     </TouchableOpacity>
                 )
             })}
+            {marker &&
+                <MapView
+                    style={{ flex: 1, zIndex: 1 }}
+                    provider={PROVIDER_GOOGLE}
+                    initialRegion={marker}
+                >
+                    <Marker
+                        coordinate={marker}
+                    />
+                </MapView>
+            }
             <TouchableOpacity style={styles.buttonLogout} onPress={handleClickLogout}>
                 <Text>Logout</Text>
             </TouchableOpacity>
@@ -118,13 +137,15 @@ const styles = StyleSheet.create({
         padding: 5,
         marginVertical: 5,
         backgroundColor: 'lightgreen',
-        borderWidth: 1
+        borderWidth: 1,
+        marginTop: 20
     },
-    itemMenu: {
+    itemMenu: (finish) => ({
         padding: 5,
         marginVertical: 5,
-        borderWidth: 1
-    },
+        borderWidth: 1,
+        backgroundColor: finish ? 'cyan' : 'white'
+    }),
     tableData: {
         padding: 5,
         marginVertical: 5,

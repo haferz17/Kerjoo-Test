@@ -10,6 +10,12 @@ export const DoLogoutStart = 'DO_LOGOUT_START'
 export const DoLogoutSuccess = 'DO_LOGOUT_SUCCESS'
 export const DoLogoutFailed = 'DO_LOGOUT_FAILED'
 
+// Do Absen
+export const DoAbsen = 'DO_ABSEN'
+export const DoAbsenStart = 'DO_ABSEN_START'
+export const DoAbsenSuccess = 'DO_ABSEN_SUCCESS'
+export const DoAbsenFailed = 'DO_ABSEN_FAILED'
+
 // Get todo list
 export const GetData = 'GET_DATA'
 export const GetDataStart = 'GET_DATA_START'

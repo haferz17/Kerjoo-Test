@@ -2,6 +2,9 @@ import {
     GetDataStart,
     GetDataSuccess,
     GetDataFailed,
+    DoAbsenStart,
+    DoAbsenSuccess,
+    DoAbsenFailed,
 } from '../../config/actionType';
 
 const initialState = {
@@ -28,6 +31,26 @@ const homeReducer = (state = initialState, action) => {
                 data: action.data
             }
         case GetDataFailed:
+            return {
+                ...state,
+                isLoading: false,
+                isError: true,
+            }
+        case DoAbsenStart:
+            return {
+                ...state,
+                isLoading: true,
+                isSuccess: false,
+                isError: false,
+            }
+        case DoAbsenSuccess:
+            return {
+                ...state,
+                isLoading: false,
+                isSuccess: true,
+                // data: action.data
+            }
+        case DoAbsenFailed:
             return {
                 ...state,
                 isLoading: false,

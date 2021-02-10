@@ -5,6 +5,7 @@ import { getDataAction } from "../../redux/actions/homeAction";
 import { doLogoutAction } from "../../redux/actions/authAction";
 import { LOGIN } from '../../config/navigation';
 import { ScreenLoader } from '../../components';
+import moment from 'moment';
 
 const listAbsen = [
     { id: 1, name: 'Absen masuk' },
@@ -32,6 +33,17 @@ const Home = (props) => {
 
     // useEffect(() => { dispatch(getDataAction()) }, [])
 
+    const handleClickAbsen = (id) => {
+        const body = {
+            type_id: id,
+            log_date: moment().format("YYYY-MM-DD"),
+            log_time: moment().format("HH:mm:ss"),
+            longitude: "",
+            latitude: ""
+        }
+        console.warn(body)
+    }
+
     const handleClickLogout = () => {
         dispatch(doLogoutAction())
     }
@@ -50,7 +62,7 @@ const Home = (props) => {
             </TouchableOpacity>
             {showAbsen && listAbsen.map(item => {
                 return (
-                    <TouchableOpacity onPress={() => null} style={styles.itemMenu}>
+                    <TouchableOpacity onPress={() => handleClickAbsen(item.id)} style={styles.itemMenu}>
                         <Text>{item.name}</Text>
                     </TouchableOpacity>
                 )
